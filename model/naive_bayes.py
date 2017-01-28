@@ -40,7 +40,8 @@ class NaiveBayes(ContinuousModel):
         if hasattr(self.model, "decision_function"):
             dvalue = self.model.decision_function(feature, *args, **kwargs)
         else:
-            dvalue = self.model.predict_proba(feature, *args, **kwargs)[:, 1]
+            dvalue = self.model.predict_proba(feature, *args, **kwargs)
+            # [:, 1]
 
         if len(np.shape(dvalue)) == 1:  # n_classes == 2
             return np.vstack((-dvalue, dvalue)).T
