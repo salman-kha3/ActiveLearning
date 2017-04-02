@@ -1,10 +1,18 @@
+""" Uncertainty Sampling
+
+This module contains a class that implements two of the most well-known
+uncertainty sampling query strategies: the least confidence method and the
+smallest margin method (margin sampling).
+
+"""
 import numpy as np
 
 from libact.base.interfaces import QueryStrategy, ContinuousModel
+from libact.base.dataset import Dataset
 from libact.utils import inherit_docstring_from, zip
 
 
-class QueryStrategyImpl(QueryStrategy):
+class UncertaintySampling(QueryStrategy):
 
     """Uncertainty Sampling
 
@@ -29,26 +37,6 @@ class QueryStrategyImpl(QueryStrategy):
     model: :py:class:`libact.base.interfaces.ContinuousModel` object instance
         The model trained in last query.
 
-
-    Examples
-    --------
-    Here is an example of declaring a UncertaintySampling query_strategy
-    object:
-
-    .. code-block:: python
-
-       from libact.query_strategies import UncertaintySampling
-       from libact.models import LogisticRegression
-
-       qs = UncertaintySampling(
-                dataset, # Dataset object
-                model=LogisticRegression(C=0.1)
-            )
-
-    Note that the model given in the :code:`model` parameter must be a
-    :py:class:`ContinuousModel` which supports predict_real method.
-
-
     References
     ----------
 
@@ -57,7 +45,7 @@ class QueryStrategyImpl(QueryStrategy):
     """
 
     def __init__(self, *args, **kwargs):
-        super(QueryStrategyImpl, self).__init__(*args, **kwargs)
+        super(UncertaintySampling, self).__init__(*args, **kwargs)
 
         self.model = kwargs.pop('model', None)
         if self.model is None:
@@ -68,7 +56,10 @@ class QueryStrategyImpl(QueryStrategy):
             raise TypeError(
                 "model has to be a ContinuousModel"
             )
-        self.model.train(self.dataset)
+        if isinstance(self.dataset, Dataset):
+            self.model.train(self.dataset.data)
+        else:
+            self.model.train(self.dataset)
 
         self.method = kwargs.pop('method', 'lc')
         if self.method not in ['lc', 'sm']:
@@ -80,17 +71,17 @@ class QueryStrategyImpl(QueryStrategy):
     @inherit_docstring_from(QueryStrategy)
     def make_query(self):
         dataset = self.dataset
-        self.model.train(dataset)
+        self.model.train(dataset.data)
 
         unlabeled_entry_ids, X_pool = zip(*dataset.get_unlabeled_entries())
-
+        X_pool_list = list(X_pool)
         if self.method == 'lc':  # least confident
             ask_id = np.argmin(
-                np.max(self.model.predict_real(X_pool), axis=1)
+                np.max(self.model.predict_real(X_pool_list), axis=1)
             )
 
         elif self.method == 'sm':  # smallest margin
-            dvalue = self.model.predict_real(X_pool)
+            dvalue = self.model.predict_real(X_pool_list)
 
             if np.shape(dvalue)[1] > 2:
                 # Find 2 largest decision values

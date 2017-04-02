@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ActiveLearningMovieReviews.iml" filepath="$PROJECT_DIR$/.idea/ActiveLearningMovieReviews.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../thesis/stargraph-web-master-be3a3c4bc9e194c758bd98506c0b725833ec16a2/.idea/stargraph-web.iml" filepath="$PROJECT_DIR$/../../thesis/stargraph-web-master-be3a3c4bc9e194c758bd98506c0b725833ec16a2/.idea/stargraph-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../thesis/text-annotation-tool-master-8a75899496386d97e9e26284429e1ce421ea83dc/.idea/text-annotation-tool-master-8a75899496386d97e9e26284429e1ce421ea83dc.iml" filepath="$PROJECT_DIR$/../../thesis/text-annotation-tool-master-8a75899496386d97e9e26284429e1ce421ea83dc/.idea/text-annotation-tool-master-8a75899496386d97e9e26284429e1ce421ea83dc.iml" />
     </modules>
   </component>
 </project>

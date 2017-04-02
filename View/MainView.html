@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="http://localhost:63342/ActiveLearningMovieReviews/View/mainview_controller.js"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Text Annotation Tool</title>
+</head>
+<body>
+<div ng-controller="myCtrl">
+    <form ng-submit="sendQuery()">
+        <div align="center">
+            <input  type="text" placeholder="Insert a review" ng-model="review.rev">
+            Your review is {{sentiment}}<br>
+            <label>Accuracy
+                <input type="text" ng-model="accuracy">
+            </label>
+            <label for="check">Wrong sentiment:
+                <input id="check" type="checkbox" ng-model="controlChecked">
+            </label><br>
+            <label>Appropriate Sentiment</label>
+            <select ng-model="review.selectedSentiment" ng-disabled="!controlChecked">
+                <option value="">---Please select---</option>
+                <option value="pos">Positive</option>
+                <option value="neg">Negative</option>
+            </select><br>
+
+            <button ng-click="updateClassifier()">update</button>
+            <input type="submit" value="submit">
+        </div>
+    </form>
+</div>
+</body>
+</html>

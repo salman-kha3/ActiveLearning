@@ -55,7 +55,8 @@ print(reviews_train_tfidf.shape)
 
 train_ds = Dataset(reviews_train_tfidf.toarray(), np.concatenate(
         [sentiments_train[:10], [None] * (len(sentiments_train) - 10)]))
-classifier = MultinomialNB().fit(reviews_train_tfidf, sentiments_train)
+# classifier = NaiveBayes.fit(reviews_train_tfidf, sentiments_train)
+
 
 reviews_test_counts= count_vectorizer.transform(reviews_test)
 reviews_test_tfidf= tfidf_transformer.transform(reviews_test_counts)
@@ -68,24 +69,42 @@ lbr = IdealLabeler(fully_labeled_trn_ds)
 quota = len(sentiments_train) - 10
 qs = UncertaintySampling(train_ds, method='sm', model= NaiveBayes())
 model = NaiveBayes()
+classifier = model.train(train_ds)
+#
 error_uncertainty_train, error_uncertainty_test = run(train_ds, test_ds, lbr, model, qs, quota)
 
-qs2 = RandomSampling(train_ds_copy)
-model = NaiveBayes()
-
-error_sample_train, error_sample_test = run(train_ds_copy, test_ds, lbr, model, qs2, quota)
+# qs2 = RandomSampling(train_ds_copy)
+# model = NaiveBayes()
+#
+# error_sample_train, error_sample_test = run(train_ds_copy, test_ds, lbr, model, qs2, quota)
 
 #     # Plot the learning curve of UncertaintySampling to RandomSampling
 #     # The x-axis is the number of queries, and the y-axis is the corresponding
 #     # error rate.
 query_num = np.arange(1, quota + 1)
 plt.plot(query_num, error_uncertainty_train, 'b', label='Uncertainty Training')
-plt.plot(query_num, error_sample_train, 'r', label='Random Train')
+# plt.plot(query_num, error_sample_train, 'r', label='Random Train')
 plt.plot(query_num, error_uncertainty_test, 'g', label='Uncertainty Test')
-plt.plot(query_num, error_sample_test, 'k', label='Random Test')
+# plt.plot(query_num, error_sample_test, 'k', label='Random Test')
 plt.xlabel('Number of Queries')
 plt.ylabel('Error')
 plt.title('Experiment Result')
 plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
             fancybox=True, shadow=True, ncol=5)
 plt.show()
+
+# def calculateTFIDF(review_data):
+#     reviews_counts = count_vectorizer.transform(review_data)
+#     reviews_tfidf = tfidf_transformer.transform(reviews_counts)
+#     return reviews_tfidf
+#
+# def predictReviews(review):
+#     predicted = classifier.predict(calculateTFIDF(review))
+#     return predicted
+#
+# revi= ['its a great movie','not a bad movie']
+# predicts= predictReviews(revi)
+#
+# for doc, category in zip(revi, predicts):
+#     print('%r => %s' % (doc, movie_reviews_dataset.target_names[category]))
+
